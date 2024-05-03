@@ -1,0 +1,19 @@
+CREATE VIEW Loan_DPD_INTODEFAULT_New AS
+WITH CTE AS (
+        SELECT LOAN_ID,
+               BUCKET,
+               PAST_DUE_AMT,
+               ROW_NUMBER() OVER (PARTITION BY LOAN_ID ORDER BY BUCKET) AS RowNum
+          FROM LOAN
+         WHERE PAST_DUE_AMT >= 100
+    )
+    SELECT l.LOAN_ID,
+           l.BUCKET,
+           CASE WHEN CTE.RowNum = 1 THEN 0 WHEN CTE.RowNum = 2 THEN 1 WHEN CTE.rownum = 3 THEN 2 WHEN CTE.rownum >= 4 THEN 3 ELSE 0 END AS DPD,
+           CASE WHEN CTE.rownum >= 4 THEN "Y" ELSE "N" END AS INTODEFAULT_New
+      FROM loan AS l
+           LEFT JOIN
+           CTE ON l.LOAN_ID = cte.LOAN_ID AND 
+                  l.BUCKET = cte.BUCKET
+     ORDER BY l.LOAN_ID,
+              l.BUCKET;

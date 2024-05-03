@@ -1,0 +1,24 @@
+CREATE VIEW Household_inconsistency AS
+WITH check_household_incon_cte AS (
+    SELECT 
+        household_id, 
+        COUNT(DISTINCT married) AS incon_married,  
+        COUNT(DISTINCT house_owner) AS incon_house_owner, 
+        COUNT(DISTINCT child_no) AS incon_child_no, 
+        COUNT(DISTINCT hh_members) AS incon_hh_members
+    FROM 
+        household
+    GROUP BY 
+        household_id
+    HAVING 
+        COUNT(DISTINCT married) > 1 
+        OR COUNT(DISTINCT house_owner) > 1 
+        OR COUNT(DISTINCT child_no) > 1 
+        OR COUNT(DISTINCT hh_members) > 1
+)
+SELECT 
+    (SELECT COUNT(household_id) FROM check_household_incon_cte) AS no_affected_id,
+    (SELECT COUNT(incon_married) FROM check_household_incon_cte WHERE incon_married > 1) AS no_incon_married,
+    (SELECT COUNT(incon_house_owner) FROM check_household_incon_cte WHERE incon_house_owner > 1) AS no_incon_house_owner,
+    (SELECT COUNT(incon_child_no) FROM check_household_incon_cte WHERE incon_child_no > 1) AS no_incon_child_no,
+    (SELECT COUNT(incon_hh_members) FROM check_household_incon_cte WHERE incon_hh_members > 1) AS no_incon_hh_members;

@@ -1,0 +1,22 @@
+CREATE VIEW Loan_inconsistency AS
+WITH check_loan_incon_cte AS (
+    SELECT 
+        loan_id,  
+        COUNT(DISTINCT installment_nm) AS incon_installment_nm, 
+        COUNT(DISTINCT loan_amt) AS incon_loan_amt, 
+        COUNT(DISTINCT installment_amt) AS incon_installment_amt
+    FROM 
+        loan
+    GROUP BY 
+        loan_id
+    HAVING 
+        COUNT(DISTINCT installment_nm) > 1 
+        OR COUNT(DISTINCT loan_amt) > 1 
+        OR COUNT(DISTINCT installment_amt) > 1
+)
+SELECT 
+    (SELECT COUNT(loan_id) FROM check_loan_incon_cte) AS no_affected_id,
+    (SELECT COUNT(incon_installment_nm) FROM check_loan_incon_cte WHERE incon_installment_nm > 1) AS no_incon_installment_nm,
+    (SELECT COUNT(incon_loan_amt) FROM check_loan_incon_cte WHERE incon_loan_amt > 1) AS no_incon_loan_amt,
+    (SELECT COUNT(incon_installment_amt) FROM check_loan_incon_cte WHERE incon_installment_amt > 1) AS no_incon_installment_amt
+;

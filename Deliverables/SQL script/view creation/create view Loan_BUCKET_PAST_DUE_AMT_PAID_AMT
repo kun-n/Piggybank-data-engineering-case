@@ -1,0 +1,25 @@
+CREATE VIEW Loan_BUCKET_PAST_DUE_AMT_PAID_AMT AS
+
+WITH CTE AS
+(SELECT 
+    loan_id,
+    bucket,
+    past_due_amt,
+    installment_amt,
+    LAG(past_due_amt) OVER (ORDER BY loan_id, bucket) AS previous_past_due_amt,
+    past_due_amt - LAG(past_due_amt) OVER (ORDER BY loan_id, bucket) AS bucket_past_due_amt
+FROM 
+    loan)
+    
+SELECT LOAN_ID, BUCKET, PAST_DUE_AMT, INSTALLMENT_AMT,
+CASE
+WHEN CTE.BUCKET = 1 THEN PAST_DUE_AMT
+WHEN CTE.BUCKET > 1 THEN BUCKET_PAST_DUE_AMT
+END AS BUCKET_PAST_DUE_AMT,
+
+(INSTALLMENT_AMT - CASE
+WHEN CTE.BUCKET = 1 THEN PAST_DUE_AMT
+WHEN CTE.BUCKET > 1 THEN BUCKET_PAST_DUE_AMT
+END) AS PAID_AMT
+
+FROM CTE

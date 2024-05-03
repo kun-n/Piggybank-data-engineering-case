@@ -1,0 +1,8 @@
+DELETE FROM client
+WHERE (customer_id, bucket) IN (SELECT customer_id, bucket FROM client_invalid_rows);
+DELETE FROM income
+WHERE (income_id, bucket) IN (SELECT income_id, bucket FROM income_invalid_rows);
+DELETE FROM household
+WHERE (household_id, bucket) IN (SELECT household_id, bucket FROM household_invalid_rows);
+DELETE FROM loan
+WHERE (loan_id, bucket) IN (SELECT loan_id, bucket FROM loan_invalid_rows);

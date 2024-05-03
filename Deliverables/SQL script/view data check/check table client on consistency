@@ -1,0 +1,12 @@
+create view Client_inconsistency as
+
+With check_client_incon_cte as (SELECT customer_id, COUNT(DISTINCT education) as incon_education,  COUNT(DISTINCT age) as incon_age
+FROM client 
+GROUP BY customer_id
+having COUNT(DISTINCT education) > 1 or COUNT(DISTINCT age) > 1)
+
+select
+
+(Select count(customer_id) from check_client_incon_cte) as no_affected_id,
+(select count(incon_education) from check_client_incon_cte where incon_education > 1) as no_incon_education,
+(select count(incon_age) from check_client_incon_cte where incon_age > 1) as no_incon_age;

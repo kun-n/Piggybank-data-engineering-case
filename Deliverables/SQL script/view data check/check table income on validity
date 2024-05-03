@@ -1,0 +1,8 @@
+CREATE VIEW Income_invalid_rows AS
+
+select Income_id, bucket from income
+where income_id <=0
+or first_job not in ("Y", "N")
+or income < 1000
+or income > 30000
+or bucket <= 0

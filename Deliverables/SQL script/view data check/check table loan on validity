@@ -1,0 +1,20 @@
+CREATE VIEW Loan_invalid_rows AS
+
+select loan_id, bucket from loan
+where loan_id <=0
+or customer_id <= 0
+or intodefault not in ("Y", "N")
+or installment_nm < 12
+or installment_nm > 72
+or loan_amt < 500
+or loan_amt > 100000
+or loan_amt NOT GLOB '*[!0-9]*'
+or loan_amt NOT GLOB '*[!0-9].[!0-9]*'
+or installment_amt < 10 
+or installment_amt > 100000 
+or installment_amt NOT GLOB '*[!0-9]*'
+or installment_amt NOT GLOB '*[!0-9].[!0-9]*'
+or past_due_amt < 0
+or past_due_amt NOT GLOB '*[!0-9]*'
+or past_due_amt NOT GLOB '*[!0-9].[!0-9]*'
+or bucket <= 0

@@ -1,0 +1,12 @@
+CREATE VIEW Household_invalid_rows AS
+
+select household_id, bucket from household
+where household_id <=0
+or income_id <=0
+or married not in ("Y", "N")
+or house_owner not in ("Y", "N")
+or child_no < 0
+or child_no > 10
+or hh_members < 1
+or hh_members > 10
+or bucket <= 0

@@ -1,0 +1,10 @@
+CREATE VIEW Loan_INTODEFAULT_Mismatch AS
+    SELECT l.LOAN_ID,
+           l.BUCKET,
+           CASE WHEN l.INTODEFAULT != v.INTODEFAULT_NEW THEN "Y" ELSE "N" END AS INTODEFAULT_Mismatch
+      FROM loan AS l
+           LEFT JOIN
+           Loan_DPD_INTODEFAULT_New as v ON l.LOAN_ID = v.LOAN_ID AND 
+                  l.BUCKET = v.BUCKET
+     ORDER BY l.LOAN_ID,
+              l.BUCKET;

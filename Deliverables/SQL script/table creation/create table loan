@@ -1,0 +1,27 @@
+CREATE TABLE loan (
+    LOAN_ID              INTEGER NOT NULL,
+    CUSTOMER_ID          INTEGER NOT NULL,
+    REPORTING_DATE       TEXT    NOT NULL,
+    INTODEFAULT          TEXT    NOT NULL,
+    INSTALLMENT_NM       REAL    NOT NULL,
+    LOAN_AMT             REAL    NOT NULL,
+    INSTALLMENT_AMT      REAL    NOT NULL,
+    PAST_DUE_AMT         REAL    NOT NULL,
+    BUCKET               INTEGER NOT NULL,
+    DPD                  INTEGER,
+    INTODEFAULT_New      TEXT,
+    INTODEFAULT_mismatch TEXT,
+    BUCKET_PAST_DUE_AMT  REAL,
+    PAID_AMT             REAL,
+    PRIMARY KEY (
+        LOAN_ID,
+        BUCKET
+    ),
+    FOREIGN KEY (
+        CUSTOMER_ID,
+        BUCKET
+    )
+    REFERENCES client (CUSTOMER_ID,
+    BUCKET) ON DELETE CASCADE
+            ON UPDATE CASCADE
+);

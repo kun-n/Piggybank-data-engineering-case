@@ -1,0 +1,8 @@
+CREATE VIEW Client_invalid_rows AS
+
+select customer_id, bucket from client
+where customer_id <=0
+or age < 18
+or age > 100
+or education not in ("Secondary", "Elementary", "Higher Education")
+or bucket <= 0
